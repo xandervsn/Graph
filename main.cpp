@@ -138,12 +138,22 @@ int main(){
   
   
   /*
-  obj.addVertex('c');
-  obj.addVertex('b');
-  obj.addVertex('t');
+  obj.addVertex('A');
+  obj.addVertex('B');
+  obj.addVertex('C');
+  obj.addVertex('D');
+  obj.addVertex('E');
 
-  obj.addEdge('c', 't', 1);
-  obj.addEdge('b', 'c', 5);
+  obj.addEdge('A', 'B', 1);
+  obj.addEdge('A', 'C', 2);
+  obj.addEdge('A', 'D', 3);
+  obj.addEdge('A', 'E', 4);
+  obj.addEdge('B', 'C', 1);
+  obj.addEdge('B', 'D', 2);
+  obj.addEdge('B', 'E', 3);
+  obj.addEdge('C', 'D', 1);
+  obj.addEdge('C', 'E', 2);
+  obj.addEdge('D', 'E', 1);
 
   obj.print();
 
