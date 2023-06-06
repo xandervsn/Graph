@@ -47,10 +47,10 @@ public:
       for(int y = index - 1; y <= vertices; y++){
 	if(x == y){
 	  adjList[x][y] = 0;
-	}else if (x == 1){
-	  adjList[x][y] = adjList[x+1][y];
-	}else if(y == 1){
+	}else if(x == 1 || x == 0){
 	  adjList[x][y] = adjList[x][y+1];
+	}else if(y == 1 || x == 0){
+	  adjList[x][y] = adjList[x+1][y];
 	}else{
 	  adjList[x][y] = adjList[x+1][y+1];
 	}
