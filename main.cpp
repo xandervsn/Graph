@@ -17,12 +17,12 @@ public:
     for(int x = 0; x < vertices - 1; x++){
       newList[x] = new int[vertices - 1];
       for(int y = 0; y < vertices - 1; y++){
-	newList[x][y] = adjList[x+1][y+1];
+        newList[x][y] = adjList[x+1][y+1];
       }
     }
     return newList;
   }
-  
+
   void dijkstra(int** list,int n,int start) {
     int max = vertices - 1;
     int cost[max][max];
@@ -34,15 +34,20 @@ public:
     int next;
     int x;
     int y;
+
     for(x = 0; x < n; x++){
       for(y = 0; y < n; y++){
-	if(list[x][y] == 0){
-	  cost[x][y] = 999;
-	}else
-	  cost[x][y] = list[x][y];
+        //goes through each node, creates an arr of cost
+        if(list[x][y] == 0){
+          //sets cost to infinity if 0
+          cost[x][y] = 999;
+        }else
+          //otherwise adds to cost arr
+          cost[x][y] = list[x][y];
       }
     }
     for(x = 0; x < n; x++){
+      //creates an arr of distance
       distance[x] = cost[start][x];
       pred[x] = start;
       visited[x] = 0;
@@ -51,24 +56,28 @@ public:
     visited[start] = 1;
     count = 1;
     while(count < n - 1){
+      //each node
       min = 999;
       for(x = 0; x < n; x++){
-	if(distance[x] < min && !visited[x]){
-	  min = distance[x];
-	  next = x;
-	}
+        if(distance[x] < min && !visited[x]){
+          //if we haven't visited a node, look at it
+          min = distance[x];
+          next = x;
+        }
       }
       visited[next] = x;
       for(x = 0; x < n; x++){
-	if(!visited[x]){
-	  if(min + cost[next][x] < distance[x]) {
-	    distance[x] = min + cost[next][x];
-	    pred[x] = next;
-	  }
-	}
+        if(!visited[x]){
+          //comparisons ish
+          if(min + cost[next][x] < distance[x]) {
+            distance[x] = min + cost[next][x];
+            pred[x] = next;
+          }
+        }
       }
       count++;
     }
+    //prints
     x = n - 1;
     cout << "Cost: " << distance[x] << endl;
     cout << "Path: " << (char)adjList[0][y + 1];
@@ -79,39 +88,39 @@ public:
     }while(y != start);
     cout << endl;
   }
-  
+
   graph(){
     //creates graph, fills each vertex w 0
     vertices = 1;
     for(int x = 0; x < 20; x++){
       for(int y = 0; y < 20; y++){
-	adjList[x][y] = 0;
+        adjList[x][y] = 0;
       }
     }
     adjList[0][0] = 32;
   };
-  
+
   void addVertex(int name){
     if(!adjList[0][0]){
       adjList[0][0] = name;
       //base case
     }else{
       for(int x = 0; x <= vertices; x++){
-	for(int y = 0; y <= vertices; y++){
-	  //add, label
-	  if(!adjList[x][y]){
-	    if(!x || !y){
-	      adjList[x][y] = name;
-	    }else{
-	      adjList[x][y] = 0;
-	    }
-	  }
-	}
+        for(int y = 0; y <= vertices; y++){
+          //add, label
+          if(!adjList[x][y]){
+            if(!x || !y){
+              adjList[x][y] = name;
+            }else{
+              adjList[x][y] = 0;
+            }
+          }
+        }
       }
     }
     vertices++;
   }
-  
+
   void removeVertex(char vertex){
     int index = 0;
     for(int i = 0; i <= vertices; i++){
@@ -120,19 +129,19 @@ public:
     }
     for(int x = 0; x <= vertices; x++){
       for(int y = 0; y <= vertices; y++){
-	if(x > index - 1 || y > index - 1){
-	  //removal
-	  //shrinks matrix, all along top/side linear, all else diagonal
-	  if(x == y){
-	    adjList[x][y] = 0;
-	  }else if(x <= 1){
-	    adjList[x][y] = adjList[x][y+1];
-	  }else if(y <= 1){
-	    adjList[x][y] = adjList[x+1][y];
-	  }else{
-	    adjList[x][y] = adjList[x+1][y+1];
-	  }
-	}
+        if(x > index - 1 || y > index - 1){
+          //removal
+          //shrinks matrix, all along top/side linear, all else diagonal
+          if(x == y){
+            adjList[x][y] = 0;
+          }else if(x <= 1){
+            adjList[x][y] = adjList[x][y+1];
+          }else if(y <= 1){
+            adjList[x][y] = adjList[x+1][y];
+          }else{
+            adjList[x][y] = adjList[x+1][y+1];
+          }
+        }
       }
     }
     adjList[0][0] = 32;
@@ -142,10 +151,10 @@ public:
   void addEdge(char a, char b, int weight){
     for(int x = 0; x <= vertices; x++){
       for(int y = 0; y <= vertices; y++){
-	if((adjList[x][0] == a && adjList[y][0] == b)){
-	  //if each label matches
-	  adjList[x][y] = weight;
-	}
+        if((adjList[x][0] == a && adjList[y][0] == b)){
+          //if each label matches
+          adjList[x][y] = weight;
+        }
       }
     }
   }
@@ -163,11 +172,11 @@ public:
   void print(){
     for(int x = 0; x < vertices; x++){
       for(int y = 0; y < vertices; y++){
-	if(!x || !y){
-	  cout << (char)adjList[x][y] << "\t";
-	}else{
-	  cout << adjList[x][y] << "\t";
-	}
+        if(!x || !y){
+          cout << (char)adjList[x][y] << "\t";
+        }else{
+          cout << adjList[x][y] << "\t";
+        }
       }
       cout << "\n\n\n";
     }
@@ -176,7 +185,7 @@ public:
 
 int main(){
   graph obj;
-  
+
   while(true){
     char input[10];
     char label;
@@ -220,7 +229,7 @@ int main(){
     }
   }
   /*
-  
+
   obj.addVertex('A');
   obj.addVertex('B');
   obj.addVertex('C');
@@ -235,8 +244,8 @@ int main(){
   obj.addEdge('C', 'D', 2);
   obj.addEdge('E', 'C', 1);
   obj.addEdge('E', 'D', 6);
-  
-  
+
+
   obj.addEdge('A', 'B', 6);
   obj.addEdge('A', 'D', 1);
   obj.addEdge('D', 'B', 2);
@@ -244,7 +253,7 @@ int main(){
   obj.addEdge('B', 'E', 2);
   obj.addEdge('C', 'B', 5);
   obj.addEdge('C', 'E', 5);
-  
+
   obj.addEdge('A', 'B', 1);
   obj.addEdge('A', 'C', 2);
   obj.addEdge('A', 'D', 3);
@@ -255,14 +264,13 @@ int main(){
   obj.addEdge('C', 'D', 1);
   obj.addEdge('C', 'E', 2);
   obj.addEdge('D', 'E', 1);
-  
-  
+
+
   obj.print();
 
   obj.dijkstra(obj.workable(), 4, 0);
-  
+
   cout << endl;
   */
-  
   return 0;
 }
