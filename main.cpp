@@ -1,7 +1,7 @@
 /* Xander Siruno-Nebel
    C++/Data Structures, Galbraith
-   6/6/23
-   Graph; representation of an adjacency matrix in C++
+   6/8/23
+   Graph: representation of an adjacency matrix in C++
  */
 
 #include <iostream>
@@ -13,72 +13,75 @@ public:
   int adjList[21][21];
   int vertices;
   int** workable(){
-    cout << "workable:" << endl;
     int ** newList = new int*[vertices - 1];
     for(int x = 0; x < vertices - 1; x++){
       newList[x] = new int[vertices - 1];
       for(int y = 0; y < vertices - 1; y++){
 	newList[x][y] = adjList[x+1][y+1];
-	cout << newList[x][y] << " ";
       }
-      cout << endl;
     }
     return newList;
   }
   
-  void dijkstra(int** G,int n,int startnode) {
+  void dijkstra(int** list,int n,int start) {
     int max = vertices - 1;
-    int cost[max][max],distance[max],pred[max];
-    int visited[max],count,mindistance,nextnode,i,j;
-    for(i = 0; i < n; i++){
-      for(j = 0; j < n; j++){
-	if(G[i][j] == 0){
-	  cost[i][j] = 999;
+    int cost[max][max];
+    int distance[max];
+    int pred[max];
+    int visited[max];
+    int count;
+    int min;
+    int next;
+    int x;
+    int y;
+    for(x = 0; x < n; x++){
+      for(y = 0; y < n; y++){
+	if(list[x][y] == 0){
+	  cost[x][y] = 999;
 	}else
-	  cost[i][j] = G[i][j];
+	  cost[x][y] = list[x][y];
       }
     }
-    for(i = 0; i < n; i++){
-      distance[i] = cost[startnode][i];
-      pred[i] = startnode;
-      visited[i] = 0;
+    for(x = 0; x < n; x++){
+      distance[x] = cost[start][x];
+      pred[x] = start;
+      visited[x] = 0;
     }
-    distance[startnode] = 0;
-    visited[startnode] = 1;
-    count=1;
+    distance[start] = 0;
+    visited[start] = 1;
+    count = 1;
     while(count < n - 1){
-      mindistance = 999;
-      for(i = 0; i < n; i++){
-	if(distance[i] < mindistance && !visited[i]){
-	  mindistance = distance[i];
-	  nextnode = i;
+      min = 999;
+      for(x = 0; x < n; x++){
+	if(distance[x] < min && !visited[x]){
+	  min = distance[x];
+	  next = x;
 	}
       }
-      visited[nextnode] = 1;
-      for(i = 0; i < n; i++){
-	if(!visited[i]){
-	  if(mindistance + cost[nextnode][i] < distance[i]) {
-	    distance[i] = mindistance + cost[nextnode][i];
-	    pred[i] = nextnode;
+      visited[next] = x;
+      for(x = 0; x < n; x++){
+	if(!visited[x]){
+	  if(min + cost[next][x] < distance[x]) {
+	    distance[x] = min + cost[next][x];
+	    pred[x] = next;
 	  }
 	}
       }
       count++;
     }
-    for(i = 0; i < n; i++){
-      if(i != startnode){
-	cout << "\nDistance of node" << i << " = " << distance[i];
-	cout << "\nPath = " << i;
-	j = i;
-	do{
-	j = pred[j];
-	  cout << " <- " << j;
-	}while(j != startnode);
-      }
-    }
+    x = n - 1;
+    cout << "Cost: " << distance[x] << endl;
+    cout << "Path: " << (char)adjList[0][y + 1];
+    y = x;
+    do{
+      y = pred[y];
+      cout << "<-" << (char)adjList[0][y + 1];
+    }while(y != start);
+    cout << endl;
   }
   
   graph(){
+    //creates graph, fills each vertex w 0
     vertices = 1;
     for(int x = 0; x < 20; x++){
       for(int y = 0; y < 20; y++){
@@ -91,9 +94,11 @@ public:
   void addVertex(int name){
     if(!adjList[0][0]){
       adjList[0][0] = name;
+      //base case
     }else{
       for(int x = 0; x <= vertices; x++){
 	for(int y = 0; y <= vertices; y++){
+	  //add, label
 	  if(!adjList[x][y]){
 	    if(!x || !y){
 	      adjList[x][y] = name;
@@ -110,11 +115,14 @@ public:
   void removeVertex(char vertex){
     int index = 0;
     for(int i = 0; i <= vertices; i++){
+      //base case
       if(adjList[i][0] == vertex) index = i;
     }
     for(int x = 0; x <= vertices; x++){
       for(int y = 0; y <= vertices; y++){
 	if(x > index - 1 || y > index - 1){
+	  //removal
+	  //shrinks matrix, all along top/side linear, all else diagonal
 	  if(x == y){
 	    adjList[x][y] = 0;
 	  }else if(x <= 1){
@@ -135,6 +143,7 @@ public:
     for(int x = 0; x <= vertices; x++){
       for(int y = 0; y <= vertices; y++){
 	if((adjList[x][0] == a && adjList[y][0] == b)){
+	  //if each label matches
 	  adjList[x][y] = weight;
 	}
       }
@@ -155,20 +164,19 @@ public:
     for(int x = 0; x < vertices; x++){
       for(int y = 0; y < vertices; y++){
 	if(!x || !y){
-	  cout << (char)adjList[x][y] << " ";
+	  cout << (char)adjList[x][y] << "\t";
 	}else{
-	  cout << adjList[x][y] << " ";
+	  cout << adjList[x][y] << "\t";
 	}
       }
-      cout << endl;
+      cout << "\n\n\n";
     }
   }
 };
 
 int main(){
   graph obj;
-
-  /*  
+  
   while(true){
     char input[10];
     char label;
@@ -203,11 +211,15 @@ int main(){
       obj.print();
     }else if(strcmp(input, "quit") == 0){
       break;
+    }else if(strcmp(input, "path") == 0){
+      cout << "Input start vertex:" << endl;
+      cin >> label;
+      cout << "Input end vertex:" << endl;
+      cin >> label2;
+      obj.dijkstra(obj.workable(), (int)label2 - 63, (int)label - 64);
     }
   }
-  return 0;
-  */
-  
+  /*
   
   obj.addVertex('A');
   obj.addVertex('B');
@@ -215,6 +227,7 @@ int main(){
   obj.addVertex('D');
   obj.addVertex('E');
 
+  /*
   obj.addEdge('A', 'B', 1);
   obj.addEdge('D', 'A', 3);
   obj.addEdge('E', 'A', 10);
@@ -222,8 +235,8 @@ int main(){
   obj.addEdge('C', 'D', 2);
   obj.addEdge('E', 'C', 1);
   obj.addEdge('E', 'D', 6);
-
-  /*
+  
+  
   obj.addEdge('A', 'B', 6);
   obj.addEdge('A', 'D', 1);
   obj.addEdge('D', 'B', 2);
@@ -242,14 +255,14 @@ int main(){
   obj.addEdge('C', 'D', 1);
   obj.addEdge('C', 'E', 2);
   obj.addEdge('D', 'E', 1);
-  */
-
+  
+  
   obj.print();
 
   obj.dijkstra(obj.workable(), 4, 0);
   
   cout << endl;
-    
+  */
   
   return 0;
 }
